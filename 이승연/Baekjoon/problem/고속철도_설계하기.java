@@ -12,21 +12,26 @@ public class 고속철도_설계하기 {
     public static int N;
     public static int C = 0;
     public static int M = 0;
+
     public static ArrayList<Node> arr = new ArrayList<>();
     public static ArrayList<int[]> cities = new ArrayList<>();
     public static int[] group;
+
+    public static int[][] map;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         Function<String,Integer> stoi = Integer::parseInt;
         N  = stoi.apply(st.nextToken());
+        map = new int[N+1][N+1];
         for(int i=0; i<N; i++) {
             st = new StringTokenizer(br.readLine());
             for(int j=0 ; j<N ; j++){
                 int cost = stoi.apply(st.nextToken());
                 if (i != j) {
                     arr.add(new Node(cost, i+1, j+1));
+                    map[i+1][j+1] = cost;
                 }
             }
         }
@@ -86,6 +91,36 @@ public class 고속철도_설계하기 {
             return x;
         }
         return getGroup(group[x]);
+    }
+
+    public static void prim() {
+        int curNode = 1;
+        int count = N;
+        int CforMinus = 0;
+        while (count != 0) {
+            int nextNode = 0;
+            int minCost = Integer.MAX_VALUE;
+            for(int i=1; i<map[curNode].length; i++)  {
+                if (map[curNode][i] == 0) continue;
+                if (i!=curNode && map[curNode][i]<0) {
+                    CforMinus -= map[curNode][i];
+                }
+                if (minCost > Math.abs(map[curNode][i])) {
+                    nextNode = i;
+                    minCost = Math.abs(map[curNode][i]);
+                }
+            }
+
+            if (map[curNode][nextNode] > 0) {
+                M++;
+                cities.add(new int[]{curNode, nextNode});
+                C += map[curNode][nextNode];
+            } 
+            curNode = nextNode;
+            count--;
+        }
+
+        C += (CforMinus/2);
     }
 
     public static class Node {
