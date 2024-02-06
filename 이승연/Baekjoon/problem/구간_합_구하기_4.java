@@ -11,23 +11,10 @@ public class 구간_합_구하기_4 {
         int N = Integer.parseInt(nm[0]);
         int M = Integer.parseInt(nm[1]);
 
-        int[][] dp = new int[N+1][N+1];
+        int[] dp = new int[N+1];
         String[] n = br.readLine().split(" ");
-        for(int i=0; i<n.length; i++) {
-            dp[i+1][i+1] = Integer.parseInt(n[i]);
-        }
-
-        for(int i=1; i<N+1; i++) {
-            if (i == 1) {
-                for(int j=1; j<N+1-i; j++) {
-                    dp[j][j+1] = dp[j][j]+dp[j+1][j+1];
-                }
-                continue;
-            }
-
-            for(int j=1; j<N+1-i; j++) {
-                dp[j][j+i] = dp[j][j+1]+dp[j+2][j+i];
-            }
+        for(int i=1; i<n.length+1; i++) {
+            dp[i] = dp[i-1]+Integer.parseInt(n[i-1]);
         }
 
         while (M != 0) {
@@ -35,7 +22,7 @@ public class 구간_합_구하기_4 {
             int i = Integer.parseInt(info[0]);
             int j = Integer.parseInt(info[1]);
 
-            System.out.println("\ndp: "+dp[i][j]);
+            System.out.println(dp[j]-dp[i-1]);
             M--;
         }
     }
