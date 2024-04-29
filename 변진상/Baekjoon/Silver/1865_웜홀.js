@@ -14,7 +14,7 @@ const bellmanFord = (start, N, edgeList) => {
   const dist = new Array(N + 1).fill(Number.MAX_SAFE_INTEGER);
   dist[start] = 0;
   let isCyclic = false;
-
+  console.log(edgeList);
   for (let i = 1; i <= N; i++) {
     for (const [crntNode, nextNode, cost] of edgeList) {
       if (dist[nextNode] > dist[crntNode] + cost) {
@@ -24,6 +24,7 @@ const bellmanFord = (start, N, edgeList) => {
         }
       }
     }
+    console.log(dist);
   }
 
   return isCyclic;
