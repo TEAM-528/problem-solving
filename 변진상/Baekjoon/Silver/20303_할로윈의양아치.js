@@ -11,51 +11,48 @@ const stdin = fs
 const [N, M, K] = stdin[0];
 const candyNumArr = [...stdin[1]];
 const edgeInfo = stdin.slice(2);
-const visited = new Array(N).fill(false);
 
-const adjacencyList = Array.from({ length: N + 1 }, () => []);
+const unionList = new Array(N + 1).fill(0);
+for (let i = 0; i <= N; i++) {
+  unionList[i] = i;
+}
 
-edgeInfo.forEach(([from, to]) => {
-  adjacencyList[from].push(to);
-  adjacencyList[to].push(from);
-});
+const findRoot = (node) => {
+  if (unionList[node] === node) return node;
 
-const bfs = (startPoint) => {
-  const queue = [];
-  let nodeCnt = 0;
-  let cost = 0;
+  return (unionList[node] = findRoot(unionList[node]));
+};
+const union = (a, b) => {
+  let parentA = findRoot(a);
+  let parentB = findRoot(b);
 
-  queue.push(startPoint);
-
-  while (queue.length !== 0) {
-    const crntNode = queue.shift();
-    visited[crntNode] = true;
-    cost += candyNumArr[crntNode - 1];
-    nodeCnt += 1;
-
-    for (let nextNode of adjacencyList[crntNode]) {
-      if (visited[nextNode]) continue;
-      queue.push(nextNode);
-    }
+  if (parentA < parentB) {
+    unionList[parentB] = parentA;
+  } else {
+    unionList[parentA] = parentB;
   }
-
-  return [nodeCnt, cost];
 };
 
-const friendNumCostArr = [];
+edgeInfo.forEach(([f1, f2]) => {
+  union(f1, f2);
+});
 
-for (let i = 1; i <= N; i++) {
-  if (visited[i]) continue;
-  friendNumCostArr.push(bfs(i));
+const friendNumCostArr = Array.from({ length: N + 1 }, () => [0, 0]);
+
+for (let i = 1; i < N + 1; i++) {
+  const root = findRoot(i);
+  friendNumCostArr[root][0] += 1;
+  friendNumCostArr[root][1] += candyNumArr[i - 1];
 }
 
 const dp = Array.from({ length: K }, () => 0);
 
-for (let idx = 0; idx < friendNumCostArr.length; idx++) {
-  for (let i = K - 1; i >= 0; i--) {
-    const [friendNum, cost] = friendNumCostArr[idx];
-    if (i - friendNum >= 0) {
-      dp[i] = Math.max(dp[i], dp[i - friendNum] + cost);
+for (let i = 1; i <= N; i++) {
+  if (findRoot(i) !== i) continue;
+  for (let j = K - 1; j >= 0; j--) {
+    const [friendNum, cost] = friendNumCostArr[i];
+    if (j - friendNum >= 0) {
+      dp[j] = Math.max(dp[j], dp[j - friendNum] + cost);
     }
   }
 }
