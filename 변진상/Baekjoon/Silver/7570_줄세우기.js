@@ -12,16 +12,16 @@ const N = stdin[0][0];
 const kidsArr = stdin[1];
 const dp = new Array(N).fill(1);
 
+const indexMap = new Map();
+
+kidsArr.forEach((v, i) => indexMap.set(v, i));
+
 for (let i = 0; i < N; i++) {
   const currentKid = kidsArr[i];
-  for (let j = 0; j < i; j++) {
-    const prevKidNum = kidsArr[j];
+  if (currentKid === 1) continue;
+  const prevKidIndex = indexMap.get(currentKid - 1);
 
-    if (prevKidNum + 1 === currentKid) {
-      dp[i] = dp[j] + 1;
-      break;
-    }
-  }
+  if (prevKidIndex < i) dp[i] = dp[prevKidIndex] + 1;
 }
 
 console.log(N - Math.max(...dp));
