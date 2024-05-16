@@ -56,6 +56,5 @@ const BFS = () => {
 };
 
 BFS();
-cost;
 
 console.log(cost[N - 1][M - 1]);
