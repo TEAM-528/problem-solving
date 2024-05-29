@@ -9,30 +9,21 @@ const stdin = fs
   .map((ele) => +ele);
 
 const [N, K] = stdin;
-
-const colorArr = new Array(N).fill(false);
+const dp = Array.from({ length: N + 1 }, () =>
+  Array.from({ length: K + 1 }, () => 0)
+);
 let answer = 0;
 
-const startTime = new Date();
+for (let i = 1; i <= N; i++) {
+  dp[i][0] = 1;
+  dp[i][1] = i;
+}
 
-const dfs = (L, start) => {
-  if (L === K) {
-    answer += 1;
-    return;
-  } else {
-    let lastIdx = colorArr[0] ? colorArr.length - 1 : colorArr.length;
-
-    for (let i = start; i < lastIdx; i++) {
-      colorArr[i] = true;
-      dfs(L + 1, i + 2);
-      colorArr[i] = false;
-    }
+for (let i = 2; i < N + 1; i++) {
+  for (let j = 2; j < K + 1; j++) {
+    dp[i][j] = (dp[i - 2][j - 1] + dp[i - 1][j]) % 1000000003;
   }
-};
+}
 
-dfs(0, 0);
-
-console.log(answer % 1000000003);
-const endTime = new Date();
-
-console.log(endTime.getTime() - startTime.getTime());
+answer = (dp[N - 3][K - 1] + dp[N - 1][K]) % 1000000003;
+console.log(answer);
