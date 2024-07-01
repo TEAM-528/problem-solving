@@ -11,27 +11,33 @@ const stdin = fs
 const [N] = stdin[0];
 const payAndDayArr = stdin.slice(1);
 
-const tmpArr = Array.from({ length: 10000 + 1 }, () => []);
+const tmpMap = new Map();
 let latestDay = 0;
 
 payAndDayArr.forEach(([pay, day]) => {
-  tmpArr[day].push(pay);
+  if (!tmpMap.has(day)) {
+    tmpMap.set(day, [pay]);
+  } else {
+    tmpMap.set(day, [...tmpMap.get(day), pay]);
+  }
 
   latestDay = Math.max(latestDay, day);
 });
-
-const payOnDayArr = tmpArr.slice(0, latestDay + 1);
 
 const getPlan = () => {
   let totalPay = 0;
 
   for (let i = latestDay; i > 0; i--) {
-    if (!payOnDayArr[i].length) continue;
-    const sortedPays = payOnDayArr[i].sort((a, b) => b - a);
+    if (!tmpMap.has(i)) continue;
+    const sortedPays = tmpMap.get(i).sort((a, b) => b - a);
 
     totalPay += sortedPays[0];
 
-    payOnDayArr[i - 1] = [...payOnDayArr[i - 1], ...sortedPays.slice(1)];
+    if (!tmpMap.has(i - 1) && sortedPays.length > 1) {
+      tmpMap.set(i - 1, sortedPays.slice(1));
+    } else if (tmpMap.has(i - 1) && sortedPays.length > 1) {
+      tmpMap.set(i - 1, [...tmpMap.get(i - 1), ...sortedPays.slice(1)]);
+    }
   }
 
   console.log(totalPay);
