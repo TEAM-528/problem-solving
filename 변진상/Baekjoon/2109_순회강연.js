@@ -9,35 +9,62 @@ const stdin = fs
   .map((ele) => ele.split(" ").map((ele) => +ele));
 
 const [N] = stdin[0];
-const payAndDayArr = stdin.slice(1);
-
-const tmpMap = new Map();
 let latestDay = 0;
 
-payAndDayArr.forEach(([pay, day]) => {
-  if (!tmpMap.has(day)) {
-    tmpMap.set(day, [pay]);
-  } else {
-    tmpMap.set(day, [...tmpMap.get(day), pay]);
+const payAndDayArr = stdin.slice(1).sort((a, b) => {
+  latestDay = Math.max(latestDay, a[1], b[1]);
+  return b[1] - a[1];
+});
+
+class PriorityQueue {
+  constructor() {
+    this.queue = [];
   }
 
-  latestDay = Math.max(latestDay, day);
-});
+  // 요소 추가 (push)
+  push(element, priority) {
+    const node = { element };
+    this.queue.push(node);
+    this.queue.sort((a, b) => b.element - a.element);
+  }
+
+  // 요소 제거 (pop)
+  pop() {
+    if (this.queue.length === 0) return null;
+    return this.queue.shift().element;
+  }
+
+  // 큐가 비어있는지 확인
+  isEmpty() {
+    return this.queue.length === 0;
+  }
+
+  // 큐의 크기를 확인
+  size() {
+    return this.queue.length;
+  }
+
+  // 큐의 모든 요소를 배열로 반환
+  toArray() {
+    return this.queue.map((node) => node.element);
+  }
+}
 
 const getPlan = () => {
   let totalPay = 0;
 
-  for (let i = latestDay; i > 0; i--) {
-    if (!tmpMap.has(i)) continue;
-    const sortedPays = tmpMap.get(i).sort((a, b) => b - a);
+  const MaxHeap = new PriorityQueue();
 
-    totalPay += sortedPays[0];
+  let payIdx = 0;
 
-    if (!tmpMap.has(i - 1) && sortedPays.length > 1) {
-      tmpMap.set(i - 1, sortedPays.slice(1));
-    } else if (tmpMap.has(i - 1) && sortedPays.length > 1) {
-      tmpMap.set(i - 1, [...tmpMap.get(i - 1), ...sortedPays.slice(1)]);
+  for (let day = latestDay; day > 0; day--) {
+    while (payIdx < payAndDayArr.length && payAndDayArr[payIdx][1] === day) {
+      MaxHeap.push(payAndDayArr[payIdx][0]);
+
+      payIdx += 1;
     }
+
+    totalPay += MaxHeap.pop();
   }
 
   console.log(totalPay);
