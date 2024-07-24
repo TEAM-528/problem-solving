@@ -22,28 +22,28 @@ coordsAndNumArr.forEach(([coord, num]) => {
   }
 });
 
-rightApartmentArr.sort((a, b) => b[0] - a[0]);
-leftApartmentArr.sort((a, b) => b[0] - a[0]);
+rightApartmentArr.sort((a, b) => a[0] - b[0]);
+leftApartmentArr.sort((a, b) => a[0] - b[0]);
 
 let cnt = 0;
 
 const go = (apartmentArr) => {
   let tmpCapacity = capacity;
   while (apartmentArr.length) {
-    const [dist, num] = apartmentArr[0];
+    const [dist, num] = apartmentArr[apartmentArr.length - 1];
 
     if (num > tmpCapacity) {
       // 단지에 사람이 수용 인원보다 많을 때
       // 가능한 인원만 데려간다.
-      apartmentArr[0][1] -= tmpCapacity;
+      apartmentArr[apartmentArr.length - 1][1] -= tmpCapacity;
     } else if (num === tmpCapacity) {
       // 인원이 같을 때
       // 다 데려간다.
-      apartmentArr[0][1] = 0;
+      apartmentArr[apartmentArr.length - 1][1] = 0;
     } else {
       // 수용인원보다 작을 때
       let tmpSum = 0;
-      for (let i = 0; i < apartmentArr.length; i++) {
+      for (let i = apartmentArr.length - 1; i >= 0; i--) {
         tmpSum += apartmentArr[i][1];
 
         if (tmpSum <= capacity) {
@@ -56,8 +56,8 @@ const go = (apartmentArr) => {
     }
 
     while (apartmentArr.length) {
-      if (apartmentArr[0][1] === 0) {
-        apartmentArr.shift();
+      if (apartmentArr[apartmentArr.length - 1][1] === 0) {
+        apartmentArr.pop();
       } else {
         break;
       }

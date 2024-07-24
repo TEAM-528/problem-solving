@@ -1,3 +1,5 @@
+const startTime = new Date();
+
 const fs = require("fs");
 const stdin = fs
   .readFileSync(
@@ -39,3 +41,7 @@ questionsArr.forEach(([from, to]) => {
 });
 
 console.log(answerArr.join("\n"));
+
+const endTime = new Date();
+
+console.log(endTime.getTime() - startTime.getTime());
