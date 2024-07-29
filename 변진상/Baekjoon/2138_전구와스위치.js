@@ -1,5 +1,4 @@
 // const fs = require("fs");
-// const { CLIENT_RENEG_LIMIT } = require("tls");
 // const stdin = fs
 //   .readFileSync(
 //     "/Users/byeonjinsang/Desktop/team528_PS/변진상/Baekjoon/case.txt"
@@ -128,3 +127,25 @@ for (let i = 1; i < N; i++) {
 }
 
 console.log(answer === Number.MAX_SAFE_INTEGER ? -1 : answer);
+
+class Car {
+  constructor(name) {
+    this.name = name;
+  }
+
+  honk() {
+    console.log(`${this.name}이 경적을 울립니다!`);
+  }
+
+  static hello() {
+    console.log("저는 자동차입니다.");
+  }
+
+  set age(value) {
+    this.carAge = value;
+  }
+
+  get age() {
+    return this.carAge;
+  }
+}
