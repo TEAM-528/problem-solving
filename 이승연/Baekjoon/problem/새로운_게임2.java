@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
 
-public class 새로운_게임 {
+public class 새로운_게임2 {
 	public static int N, K;
 	public static int[][] map;
 	public static int[] dx = {0,0,0,-1,1};
@@ -69,9 +69,6 @@ public class 새로운_게임 {
 	}
 
 	public static Player movePlayer(Player player) {
-		if (!canMove(player)) {
-			return player;
-		}
 		int x = player.x+dx[player.dir];
 		int y = player.y+dy[player.dir];
 
@@ -91,14 +88,25 @@ public class 새로운_게임 {
 			Queue to = mapInfo.get(getKey(x, y));
 
 			Stack<Player> temp = new Stack<>();
-			while (!from.isEmpty()) {
+			boolean flag = false;
+			int size = from.size();
+			for(int i=0; i< size; i++) {
 				Player p = (Player)from.poll();
-				p.x = x;
-				p.y = y;
-				temp.add(p);
+				if (p.num == player.num) {
+					flag = true;
+				}
+				if (flag) {
+					p.x = x;
+					p.y = y;
+					temp.add(p);
+				} else {
+					from.add(p);
+				}
 			}
+
 			while (!temp.isEmpty()) {
-				to.add((Player)temp.pop());
+				Player p = temp.pop();
+				to.add(p);
 			}
 
 			mapInfo.put(getKey(player.x, player.y), from);
@@ -116,11 +124,20 @@ public class 새로운_게임 {
 			Queue from = mapInfo.get(getKey(player.x, player.y));
 			Queue to = mapInfo.get(getKey(x, y));
 
-			while (!from.isEmpty()) {
+			boolean flag = false;
+			int size = from.size();
+			for(int i=0; i<size; i++) {
 				Player p = (Player)from.poll();
-				p.x = x;
-				p.y = y;
-				to.add(p);
+				if (p.num == player.num) {
+					flag = true;
+				}
+				if (flag) {
+					p.x = x;
+					p.y = y;
+					to.add(p);
+				} else {
+					from.add(p);
+				}
 			}
 
 			mapInfo.put(getKey(player.x, player.y), from);
@@ -142,13 +159,6 @@ public class 새로운_게임 {
 		return x*100+y;
 	}
 
-	public static boolean canMove(Player player) {
-		Queue q = mapInfo.get(getKey(player.x, player.y));
-		Player p = (Player)q.peek();
-		if (p.num == player.num) return true;
-		return false;
-	}
-
 	public static int changeDir(int now) {
 		/*
 		 * public static int[] dx = {0,0,0,-1,1};
@@ -164,19 +174,5 @@ public class 새로운_게임 {
 			return 3;
 		}
 		return now;
-	}
-}
-
-class Player {
-	int dir;
-	int num;
-	int x;
-	int y;
-
-	public Player(int dir, int num, int x, int y) {
-		this.dir = dir;
-		this.num = num;
-		this.x = x;
-		this.y = y;
 	}
 }
